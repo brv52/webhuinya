@@ -4,9 +4,10 @@ import { useContext } from 'react';
 import { AppContext } from './context/AppContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Register from './pages/Register'; // <-- Import Register
+import Register from './pages/Register';
 import Admin from './pages/Admin';
 import Cart from './pages/Cart';
+import Blog from './pages/Blog'; // <-- Import Blog
 
 function App() {
   const { user, cart, logout } = useContext(AppContext);
@@ -19,6 +20,7 @@ function App() {
           <Link to="/" className="text-xl font-bold">MyShop</Link>
           <div className="space-x-4 flex items-center">
             <Link to="/" className="hover:text-blue-200">Products</Link>
+            <Link to="/blog" className="hover:text-blue-200">Blog</Link> {/* <-- Add Blog Link */}
             {user && <Link to="/cart" className="hover:text-blue-200">Cart ({cartCount})</Link>}
             {user?.role === 'admin' && <Link to="/admin" className="text-yellow-300 font-semibold hover:text-yellow-100">Admin Panel</Link>}
             
@@ -36,8 +38,9 @@ function App() {
         <main className="p-8 max-w-6xl mx-auto">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/blog" element={<Blog />} /> {/* <-- Add Blog Route */}
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} /> {/* <-- Add Route */}
+            <Route path="/register" element={<Register />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/cart" element={<Cart />} />
           </Routes>

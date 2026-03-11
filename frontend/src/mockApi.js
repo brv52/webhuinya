@@ -1,3 +1,4 @@
+// src/mockApi.js
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // --- MOCK DATABASE ---
@@ -11,6 +12,16 @@ let mockProducts = [
   { id: 2, name: 'Smartphone', price: 899.50, description: 'Latest model.' }
 ];
 let mockCart = [];
+
+let mockBlogs = [
+  { 
+    id: 1, 
+    title: 'Welcome to MyShop!', 
+    content: 'We are thrilled to launch our new online store. Stay tuned for amazing deals and new products dropping every week.', 
+    likes: 5, 
+    comments: [{ id: 1, username: 'user', text: 'Looks great! Can not wait to start shopping.' }] 
+  }
+];
 
 // --- AUTH & USERS ---
 export const apiLogin = async (username, password) => {
@@ -41,6 +52,7 @@ export const apiUpdateUserRole = async (userId, newRole) => {
   mockUsers = mockUsers.map(u => u.id === userId ? { ...u, role: newRole } : u);
   return { success: true };
 };
+
 // --- PRODUCTS (Public & Admin) ---
 export const apiGetProducts = async () => {
   await delay(300);
@@ -103,4 +115,40 @@ export const apiCheckout = async () => {
   await delay(600);
   mockCart = []; // Clear cart on successful checkout
   return { success: true, orderId: Date.now() };
+};
+
+// --- BLOG (Public & Admin) ---
+export const apiGetBlogs = async () => {
+  await delay(300);
+  return [...mockBlogs];
+};
+
+export const apiAddBlog = async (title, content) => {
+  await delay(400);
+  const newBlog = { id: Date.now(), title, content, likes: 0, comments: [] };
+  mockBlogs.unshift(newBlog); // Add to the top
+  return { success: true, blog: newBlog };
+};
+
+export const apiDeleteBlog = async (id) => {
+  await delay(400);
+  mockBlogs = mockBlogs.filter(b => b.id !== id);
+  return { success: true };
+};
+
+export const apiLikeBlog = async (id) => {
+  await delay(200);
+  mockBlogs = mockBlogs.map(b => b.id === id ? { ...b, likes: b.likes + 1 } : b);
+  return { success: true };
+};
+
+export const apiAddComment = async (id, username, text) => {
+  await delay(300);
+  mockBlogs = mockBlogs.map(b => {
+    if (b.id === id) {
+      return { ...b, comments: [...b.comments, { id: Date.now(), username, text }] };
+    }
+    return b;
+  });
+  return { success: true };
 };

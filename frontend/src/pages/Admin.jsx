@@ -1,20 +1,23 @@
 // src/pages/Admin.jsx
 import { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
-import { apiDeleteProduct, apiGetProducts, apiAddProduct, apiEditProduct, apiGetUsers, apiUpdateUserRole } from '../mockApi';
+import { apiDeleteProduct, apiGetProducts, apiAddProduct, apiEditProduct, apiGetUsers, apiUpdateUserRole, apiGetBlogs, apiAddBlog, apiDeleteBlog } from '../mockApi';
 
 export default function Admin() {
   const { user, products, setProducts } = useContext(AppContext);
   const [usersList, setUsersList] = useState([]);
-  const [activeTab, setActiveTab] = useState('products'); // 'products' or 'users'
+  const [blogList, setBlogList] = useState([]);
+  const [activeTab, setActiveTab] = useState('products'); // 'products', 'users', or 'blogs'
   
-  // Product Form State
+  // Forms State
   const [formData, setFormData] = useState({ name: '', price: '', description: '' });
+  const [blogData, setBlogData] = useState({ title: '', content: '' });
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     if (user?.role === 'admin') {
       apiGetUsers().then(setUsersList);
+      apiGetBlogs().then(setBlogList);
     }
   }, [user]);
 
@@ -51,14 +54,30 @@ export default function Admin() {
     setUsersList(await apiGetUsers());
   };
 
+  // --- Blog Handlers ---
+  const handleBlogSubmit = async (e) => {
+    e.preventDefault();
+    await apiAddBlog(blogData.title, blogData.content);
+    setBlogData({ title: '', content: '' });
+    setBlogList(await apiGetBlogs());
+  };
+
+  const handleDeleteBlog = async (id) => {
+    if(window.confirm("Delete this blog post?")) {
+      await apiDeleteBlog(id);
+      setBlogList(await apiGetBlogs());
+    }
+  };
+
   return (
     <div className="max-w-5xl mx-auto">
       <h2 className="text-3xl font-bold mb-6 text-gray-800">Admin Dashboard</h2>
       
       {/* Tabs */}
       <div className="flex space-x-4 mb-6 border-b pb-2">
-        <button onClick={() => setActiveTab('products')} className={`font-bold px-4 py-2 rounded ${activeTab === 'products' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>Products</button>
-        <button onClick={() => setActiveTab('users')} className={`font-bold px-4 py-2 rounded ${activeTab === 'users' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}>Users & Roles</button>
+        <button onClick={() => setActiveTab('products')} className={`font-bold px-4 py-2 rounded ${activeTab === 'products' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}>Products</button>
+        <button onClick={() => setActiveTab('users')} className={`font-bold px-4 py-2 rounded ${activeTab === 'users' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}>Users & Roles</button>
+        <button onClick={() => setActiveTab('blogs')} className={`font-bold px-4 py-2 rounded ${activeTab === 'blogs' ? 'bg-blue-600 text-white' : 'bg-gray-200 hover:bg-gray-300'}`}>Blog Posts</button>
       </div>
 
       {activeTab === 'products' && (
@@ -75,21 +94,21 @@ export default function Admin() {
               <textarea required placeholder="Description" className="border p-2 rounded" rows="2"
                 value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
               <div className="flex space-x-4">
-                <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded font-semibold">{editingId ? 'Save Changes' : 'Add Product'}</button>
-                {editingId && <button type="button" onClick={() => { setEditingId(null); setFormData({name:'', price:'', description:''}) }} className="bg-gray-400 text-white px-6 py-2 rounded">Cancel</button>}
+                <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700">{editingId ? 'Save Changes' : 'Add Product'}</button>
+                {editingId && <button type="button" onClick={() => { setEditingId(null); setFormData({name:'', price:'', description:''}) }} className="bg-gray-400 text-white px-6 py-2 rounded hover:bg-gray-500">Cancel</button>}
               </div>
             </form>
           </div>
 
-          <div className="bg-white rounded shadow p-4">
+          <div className="bg-white rounded shadow overflow-hidden">
             {products.map(p => (
-              <div key={p.id} className="flex justify-between border-b p-4 items-center">
+              <div key={p.id} className="flex justify-between border-b p-4 items-center hover:bg-gray-50">
                 <div>
                   <span className="font-semibold block">{p.name} - ${Number(p.price).toFixed(2)}</span>
                 </div>
                 <div className="flex space-x-2">
-                  <button onClick={() => handleEdit(p)} className="bg-yellow-400 px-3 py-1 rounded text-sm">Edit</button>
-                  <button onClick={() => handleDelete(p.id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
+                  <button onClick={() => handleEdit(p)} className="bg-yellow-400 px-3 py-1 rounded text-sm hover:bg-yellow-500">Edit</button>
+                  <button onClick={() => handleDelete(p.id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">Delete</button>
                 </div>
               </div>
             ))}
@@ -121,7 +140,7 @@ export default function Admin() {
                     </span>
                   </td>
                   <td className="p-4 text-right">
-                    {u.id !== user.id && ( // Prevent admin from demoting themselves
+                    {u.id !== user.id && (
                       <select 
                         value={u.role} 
                         onChange={(e) => handleRoleChange(u.id, e.target.value)}
@@ -137,6 +156,35 @@ export default function Admin() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {activeTab === 'blogs' && (
+        <>
+          <div className="bg-white p-6 rounded shadow mb-8 border-t-4 border-blue-500">
+            <h3 className="text-xl font-semibold mb-4">Create New Blog Post</h3>
+            <form onSubmit={handleBlogSubmit} className="flex flex-col space-y-4">
+              <input required type="text" placeholder="Blog Title" className="border p-2 rounded" 
+                value={blogData.title} onChange={e => setBlogData({...blogData, title: e.target.value})} />
+              <textarea required placeholder="Blog Content..." className="border p-2 rounded" rows="4"
+                value={blogData.content} onChange={e => setBlogData({...blogData, content: e.target.value})} />
+              <div>
+                <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700">Publish Post</button>
+              </div>
+            </form>
+          </div>
+
+          <div className="bg-white rounded shadow overflow-hidden">
+            {blogList.map(b => (
+              <div key={b.id} className="flex justify-between border-b p-4 items-center hover:bg-gray-50">
+                <div>
+                  <span className="font-semibold block text-lg">{b.title}</span>
+                  <span className="text-gray-500 text-sm">{b.likes} Likes | {b.comments.length} Comments</span>
+                </div>
+                <button onClick={() => handleDeleteBlog(b.id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600">Delete</button>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

@@ -1,0 +1,52 @@
+# Kto ya Krol? - eCommerce Styling & Design System
+
+This document outlines the design language, color palette, typography, and interactive elements used to create the premium, editorial feel of the kto ya krol? online store. 
+
+The styling is built entirely with **Tailwind CSS**, utilizing utility classes to maintain a highly responsive and modern interface without writing custom CSS files.
+
+## 🎨 Color Palette
+
+We moved away from standard, default colors to a more sophisticated, high-contrast palette that mimics high-end fashion and lifestyle brands.
+
+* **Background Base:** `bg-[#FAF9F6]`
+    * A warm, premium off-white/cream. This prevents eye strain and makes the dark elements pop much more effectively than stark white.
+* **Primary Brand Color (Midnight Blue/Dark Slate):** `slate-900` (`#0f172a`)
+    * Used for the hero section background, primary typography, buttons, and dark overlays. It is softer than pure black but provides the same high-contrast impact.
+* **Text & Accents:** `slate-400`, `slate-500`, `slate-600`
+    * Used for paragraphs, secondary descriptions, and subtle borders to create visual hierarchy.
+* **Utility & Swatches:** * `green-500` (Toast notification success icon)
+    * `amber-700`, `stone-400`, `slate-800` (Mock product color selection swatches)
+
+## 🔤 Typography
+
+The typography relies on extreme contrast in font weights and letter spacing (tracking) to achieve an editorial, magazine-like aesthetic using Tailwind's default `sans` stack.
+
+* **Display Headings (Hero & Section Titles):**
+    * Classes: `font-black`, `uppercase`, `tracking-tighter` (e.g., `text-6xl md:text-8xl`)
+    * Style: Massive, heavy, uppercase text with squished letter spacing for high impact.
+* **Navigation & Micro-Labels (Buttons, Links):**
+    * Classes: `font-bold`, `uppercase`, `tracking-widest`, `text-xs`
+    * Style: Very small, highly spaced, bold text. This acts as a structural anchor and looks incredibly sleek.
+* **Body Copy (Descriptions):**
+    * Classes: Normal weight, `text-slate-500` or `text-slate-600`, `leading-relaxed`
+    * Style: Clean, breathable text for easy reading.
+
+## ⬜ Shapes & UI Components
+
+* **Buttons:** Fully rounded "pill" shapes (`rounded-full`). They typically feature inverted hover states (e.g., solid dark background swapping to a dark outline on hover) to encourage interaction.
+* **Hero Section:** Features a unique bottom-border radius (`rounded-b-[3rem]`) to break up the standard boxy website grid and create a sweeping, soft transition into the product section.
+* **Product Cards:** Subtle rounding (`rounded-2xl`) with very light borders (`border-gray-100`) and soft shadows (`shadow-sm`) that dramatically increase on hover (`hover:shadow-xl`).
+* **Image Framing:** Products are locked into specific aspect ratios (e.g., `aspect-square`, `aspect-[4/5]`) with light gray backdrops (`bg-gray-50`) to ensure all product photography looks uniform, even if the source images vary in size.
+
+## ✨ Animations & Interactions
+
+Micro-interactions are critical for making the site feel expensive and responsive.
+
+* **Product Hover States:**
+    * Images slowly zoom in (`scale-110`, `duration-700`) to draw the eye.
+    * The "Add to Cart" button slides up from the bottom (`translate-y-4` to `translate-y-0`) paired with a dark fade (`opacity-0` to `opacity-100`).
+* **Quick View Modal:**
+    * Uses a `backdrop-blur-sm` to keep the user grounded on the current page.
+    * Features a combined fade, scale, and slide animation (`translate-y-12 scale-95 opacity-0` to `translate-y-0 scale-100 opacity-100`) triggered by a microscopic `10ms` delay to ensure buttery smooth browser rendering without lag.
+* **Toast Notifications:**
+    * Slides up from the bottom right corner when an item is added to the cart, automatically dismissing after 3 seconds.

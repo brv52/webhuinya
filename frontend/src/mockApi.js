@@ -8,9 +8,39 @@ let mockUsers = [
 ];
 
 let mockProducts = [
-  { id: 1, name: 'Wireless Headphones', price: 199.99, description: 'Noise-canceling.' },
-  { id: 2, name: 'Smartphone', price: 899.50, description: 'Latest model.' }
+  { 
+    id: 1, 
+    name: 'Urban Explorer Backpack', 
+    price: 120.00, 
+    originalPrice: 150.00, 
+    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80', 
+    description: 'Water-resistant, everyday carry.' 
+  },
+  { 
+    id: 2, 
+    name: 'Minimalist Tote', 
+    price: 85.00, 
+    originalPrice: 100.00, 
+    image: 'https://images.unsplash.com/photo-1591561954557-26941169b49e?auto=format&fit=crop&w=800&q=80', 
+    description: 'Sleek design for office or casual wear.' 
+  },
+  { 
+    id: 3, 
+    name: 'Weekend Duffel', 
+    price: 140.00, 
+    image: 'https://images.unsplash.com/photo-1550801640-6b8efedecfac?auto=format&fit=crop&w=800&q=80', 
+    description: 'Spacious and durable for short trips.' 
+  },
+  { 
+    id: 4, 
+    name: 'Tech Sling Bag', 
+    price: 65.00, 
+    originalPrice: 80.00, 
+    image: 'https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?auto=format&fit=crop&w=800&q=80', 
+    description: 'Compact, secure, perfect for gadgets.' 
+  }
 ];
+
 let mockCart = [];
 
 let mockBlogs = [

@@ -1,0 +1,27 @@
+{"level":"info","message":"Database connection pool established","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/auth/register","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"User registered successfully: testuser1","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/auth/register","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"warn","message":"Registration attempt failed: Duplicate username/email - testuser1","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/auth/login","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"Database connection pool established","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"User logged in: admin","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/auth/login","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"warn","message":"Login failed: Invalid password - admin","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/products","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"Product created by admin 17: Test Product","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/products","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"warn","message":"Unauthorized Admin Access Attempt by user 2","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/cart","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"GET /api/cart","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/orders/checkout","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"Checkout successful for user 17","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"GET /api/cart","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/blogs","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"Blog post created: Jest Test Blog","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/blogs/4/like","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"POST /api/blogs/4/comments","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"info","message":"GET /api/users","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"error","message":"JWT Verification Error: jwt malformed","service":"backend-api","timestamp":"2026-03-11 22:23:29","token_provided":true}
+{"level":"info","message":"GET /api/users","service":"backend-api","timestamp":"2026-03-11 22:23:29"}
+{"level":"warn","message":"Auth failed: No token provided for GET /api/users","service":"backend-api","timestamp":"2026-03-11 22:23:29"}

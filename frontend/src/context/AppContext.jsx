@@ -1,53 +1,67 @@
-// src/context/AppContext.jsx
 import { createContext, useState, useEffect } from 'react';
-import { apiGetProducts, apiGetCart, apiAddToCart, apiUpdateCartItem, apiRemoveFromCart, apiCheckout } from '../mockApi';
+import * as api from '../api';
 
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    apiGetProducts().then(setProducts);
+    api.apiGetProducts().then(setProducts).catch(console.error);
+  }, []);
+
+  useEffect(() => {
     if (user) {
-      apiGetCart().then(setCart);
+      api.apiGetCart().then(setCart).catch(() => setCart([]));
     } else {
       setCart([]);
     }
   }, [user]);
 
-  const addToCart = async (product) => {
-    if (!user) return alert("Please log in first!");
-    const updatedCart = await apiAddToCart(product);
-    setCart(updatedCart);
-  };
-
-  const updateCartQuantity = async (itemId, quantity) => {
-    const updatedCart = await apiUpdateCartItem(itemId, quantity);
-    setCart(updatedCart);
-  };
-
-  const removeFromCart = async (itemId) => {
-    const updatedCart = await apiRemoveFromCart(itemId);
-    setCart(updatedCart);
-  };
-
-  const checkout = async () => {
-    await apiCheckout();
-    setCart([]);
-    alert("Checkout successful! Order placed.");
+  const login = async (username, password) => {
+    const data = await api.apiLogin(username, password);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    setUser(data.user);
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
+    setCart([]);
+  };
+
+  const addToCart = async (product) => {
+    if (!user) return alert("Please log in first!");
+    await api.apiAddToCart(product.id);
+    setCart(await api.apiGetCart());
+  };
+
+  const updateCartQuantity = async (id, q) => {
+    await api.apiUpdateCartItem(id, q);
+    setCart(await api.apiGetCart());
+  };
+
+  const removeFromCart = async (id) => {
+    await api.apiRemoveFromCart(id);
+    setCart(await api.apiGetCart());
+  };
+
+  const checkout = async () => {
+    await api.apiCheckout();
+    setCart([]);
   };
 
   return (
     <AppContext.Provider value={{ 
-      user, setUser, products, setProducts, cart, addToCart, 
-      updateCartQuantity, removeFromCart, checkout, logout 
+      user, login, logout, products, setProducts, 
+      cart, addToCart, updateCartQuantity, removeFromCart, checkout 
     }}>
       {children}
     </AppContext.Provider>

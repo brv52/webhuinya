@@ -1,113 +1,86 @@
-// src/pages/Cart.jsx
 import { useContext, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Cart() {
   const { cart, updateCartQuantity, removeFromCart, checkout, user } = useContext(AppContext);
-  const [paymentStatus, setPaymentStatus] = useState('idle'); // idle, processing, success
+  const [paymentStatus, setPaymentStatus] = useState('idle');
   const [loadingText, setLoadingText] = useState('');
   const navigate = useNavigate();
 
-  if (!user) return <p className="text-center mt-10 text-lg">Please <Link to="/login" className="text-blue-600 underline">log in</Link> to view your cart.</p>;
+  if (!user) return <div className="text-center py-40 font-black uppercase tracking-widest">Identify to view baggage</div>;
 
   const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-  const handleMockCheckout = async () => {
+  const handleCheckout = async () => {
     setPaymentStatus('processing');
-    
-    // Step 1: Initialize
-    setLoadingText('Securing connection to payment gateway...');
+    setLoadingText('Securing connection...');
     await new Promise(r => setTimeout(r, 1200));
-    
-    // Step 2: Processing
-    setLoadingText('Processing mock credit card payment...');
+    setLoadingText('Verifying assets...');
     await new Promise(r => setTimeout(r, 1500));
-    
-    // Step 3: Verifying
-    setLoadingText('Verifying transaction...');
-    await new Promise(r => setTimeout(r, 1000));
-    
-    // Step 4: Success & Cleanup
-    await checkout(); // Calls your mock API to clear the cart
+    await checkout();
     setPaymentStatus('success');
-    
-    // Step 5: Redirect after showing success message
-    setTimeout(() => {
-      setPaymentStatus('idle');
-      navigate('/');
-    }, 3000);
+    setTimeout(() => { setPaymentStatus('idle'); navigate('/'); }, 3000);
   };
 
   if (cart.length === 0 && paymentStatus === 'idle') {
-    return <p className="text-center mt-10 text-lg">Your cart is empty. <Link to="/" className="text-blue-600 underline">Go shopping!</Link></p>;
+    return (
+      <div className="max-w-xl mx-auto py-40 text-center">
+        <h2 className="text-5xl font-black uppercase tracking-tighter mb-8">Empty Payload</h2>
+        <Link to="/" className="bg-slate-900 text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest text-xs">Return to shop</Link>
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow relative">
-      <h2 className="text-2xl font-bold mb-6 border-b pb-2">Your Shopping Cart</h2>
-      
-      <div className="space-y-4">
+    <div className="max-w-4xl mx-auto py-24 px-6 relative">
+      <h2 className="text-6xl font-black uppercase tracking-tighter mb-16">The Manifest</h2>
+      <div className="space-y-12 mb-16">
         {cart.map(item => (
-          <div key={item.id} className="flex items-center justify-between border-b pb-4">
+          <div key={item.id} className="flex items-center justify-between border-b border-slate-100 pb-12 group">
             <div className="flex-1">
-              <h3 className="font-semibold text-lg">{item.name}</h3>
-              <p className="text-gray-500">${Number(item.price).toFixed(2)} each</p>
+              <h3 className="text-2xl font-black uppercase tracking-tight text-slate-900 mb-2">{item.name}</h3>
+              <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">${item.price} Unit Value</p>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center border rounded">
-                <button onClick={() => updateCartQuantity(item.id, item.quantity - 1)} className="px-3 py-1 bg-gray-100 hover:bg-gray-200">-</button>
-                <span className="px-4 font-medium">{item.quantity}</span>
-                <button onClick={() => updateCartQuantity(item.id, item.quantity + 1)} className="px-3 py-1 bg-gray-100 hover:bg-gray-200">+</button>
+            <div className="flex items-center gap-10">
+              <div className="flex items-center bg-slate-100 rounded-full p-1 shadow-inner">
+                <button onClick={() => updateCartQuantity(item.id, item.quantity - 1)} className="w-8 h-8 flex items-center justify-center font-bold text-slate-500 hover:text-slate-900 transition">-</button>
+                <span className="w-10 text-center font-black text-xs">{item.quantity}</span>
+                <button onClick={() => updateCartQuantity(item.id, item.quantity + 1)} className="w-8 h-8 flex items-center justify-center font-bold text-slate-500 hover:text-slate-900 transition">+</button>
               </div>
-              <p className="font-bold w-20 text-right">${(item.price * item.quantity).toFixed(2)}</p>
-              <button onClick={() => removeFromCart(item.id)} className="text-red-500 hover:text-red-700 font-semibold px-2">X</button>
+              <p className="font-black text-xl text-slate-900 w-24 text-right">${(item.price * item.quantity).toFixed(2)}</p>
+              <button onClick={() => removeFromCart(item.id)} className="text-red-400 hover:text-red-600 transition font-black text-xs uppercase tracking-tighter ml-4 opacity-0 group-hover:opacity-100">✕</button>
             </div>
           </div>
         ))}
       </div>
-      
-      <div className="mt-6 flex justify-between items-center bg-gray-50 p-4 rounded">
-        <span className="text-xl font-bold">Total:</span>
-        <span className="text-2xl font-bold text-blue-600">${total.toFixed(2)}</span>
-      </div>
-      
-      <div className="mt-6 flex justify-end">
-        <button 
-          onClick={handleMockCheckout} 
-          disabled={paymentStatus !== 'idle'}
-          className="bg-green-500 text-white px-8 py-3 rounded text-lg font-bold hover:bg-green-600 transition shadow disabled:opacity-50"
-        >
-          Checkout Now
-        </button>
+
+      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-10 rounded-[2.5rem] shadow-xl border border-slate-50 gap-8">
+        <div>
+          <span className="text-slate-400 font-bold uppercase tracking-widest text-[10px] block mb-2">Total manifest value</span>
+          <span className="text-5xl font-black text-slate-900 tracking-tighter">${total.toFixed(2)}</span>
+        </div>
+        <button onClick={handleCheckout} disabled={paymentStatus !== 'idle'} className="bg-slate-900 text-white px-16 py-6 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-slate-800 shadow-2xl transition disabled:opacity-50">Secure Transaction</button>
       </div>
 
-      {/* --- MOCK PAYMENT MODAL OVERLAY --- */}
       {paymentStatus !== 'idle' && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="bg-white p-10 rounded-xl shadow-2xl flex flex-col items-center max-w-sm w-full transform transition-all">
-            
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md flex items-center justify-center z-[100]">
+          <div className="bg-white p-16 rounded-[3rem] shadow-2xl flex flex-col items-center max-w-sm w-full text-center">
             {paymentStatus === 'processing' ? (
               <>
-                {/* CSS Spinner */}
-                <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-6"></div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Processing Payment</h3>
-                <p className="text-gray-500 text-center animate-pulse">{loadingText}</p>
+                <div className="w-16 h-16 border-4 border-slate-100 border-t-slate-900 rounded-full animate-spin mb-8 shadow-inner"></div>
+                <h3 className="text-2xl font-black uppercase tracking-tight text-slate-900 mb-2">Processing</h3>
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-[9px] animate-pulse">{loadingText}</p>
               </>
             ) : (
               <>
-                {/* Success Checkmark */}
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
-                  <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
-                  </svg>
+                <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-8 shadow-inner">
+                  <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7"></path></svg>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-800 mb-2">Payment Successful!</h3>
-                <p className="text-gray-500 text-center">Thank you for your order. Redirecting to home...</p>
+                <h3 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-2">Authenticated</h3>
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-[9px]">Manifest archived. Redirecting...</p>
               </>
             )}
-            
           </div>
         </div>
       )}

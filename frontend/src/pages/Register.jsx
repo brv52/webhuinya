@@ -1,7 +1,6 @@
-// src/pages/Register.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { apiRegister } from '../mockApi';
+import { apiRegister } from '../api';
 
 export default function Register() {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
